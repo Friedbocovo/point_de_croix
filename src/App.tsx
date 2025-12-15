@@ -216,8 +216,8 @@ const CrossStitchGenerator = () => {
               </label>
               <input
                 type="range"
-                min="10"
-                max="30"
+                min={5}
+                max={30}
                 value={cellSize}
                 onChange={(e) => setCellSize(Number(e.target.value))}
                 className="w-full"
