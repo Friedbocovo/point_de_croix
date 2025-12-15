@@ -1,19 +1,19 @@
 import React, { useState, useRef } from 'react';
 
-const App = () => {
+const CrossStitchGenerator = () => {
   const [inputName, setInputName] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [orientation, setOrientation] = useState('vertical');
-  const [cellSize, setCellSize] = useState(5);
+  const [cellSize, setCellSize] = useState(15);
   const [color, setColor] = useState('#D946A6');
   const [showDownloadOptions, setShowDownloadOptions] = useState(false);
   const svgRef = useRef(null);
 
-  const letters = {
-    // 
+  const letters: { [key: string]: number[][] } = {
+    // Majuscules
     A: [[0,0,0,1,1,1,1,0,0,0],[0,0,1,1,1,1,1,1,0,0],[0,1,1,1,0,0,1,1,1,0],[0,1,1,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,1,1]],
-    B: [[1,1,1,1,1,1,1,0,0,0],[1,1,1,1,1,1,1,1,0,0],[1,1,0,0,0,0,1,1,1,0],[1,1,0,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,1,0,0],[1,1,0,0,0,0,0,1,1,0],[1,1,0,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,0,0,0]],
+    B: [[1,1,1,1,1,1,1,0,0,0],[1,1,1,1,1,1,1,1,0,0],[1,1,0,0,0,0,1,1,1,0],[1,1,0,0,0,0,0,1,1,0],[1,1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,1,0,0],[1,1,0,0,0,0,0,1,1,0],[1,1,0,0,0,0,0,1,1,1],[1,1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,0,0,0]],
     C: [[0,0,1,1,1,1,1,1,0,0],[0,1,1,1,1,1,1,1,1,0],[1,1,1,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0],[1,1,0,0,0,0,0,0,0,0],[1,1,0,0,0,0,0,0,0,0],[1,1,0,0,0,0,0,0,0,0],[1,1,1,0,0,0,0,1,1,1],[0,1,1,1,1,1,1,1,1,0],[0,0,1,1,1,1,1,1,0,0]],
     D: [[1,1,1,1,1,1,1,0,0,0],[1,1,1,1,1,1,1,1,0,0],[1,1,0,0,0,0,1,1,1,0],[1,1,0,0,0,0,0,1,1,0],[1,1,0,0,0,0,0,1,1,0],[1,1,0,0,0,0,0,1,1,0],[1,1,0,0,0,0,0,1,1,0],[1,1,0,0,0,0,1,1,1,0],[1,1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,0,0,0]],
     E: [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,0,0,0,0,0,0,0,0],[1,1,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,0,0],[1,1,1,1,1,1,1,1,0,0],[1,1,0,0,0,0,0,0,0,0],[1,1,0,0,0,0,0,0,0,0],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]],
@@ -136,16 +136,18 @@ const App = () => {
 
   const word = displayName.split('').filter(char => char !== ' ');
   
-  let totalWidth, totalHeight, totalGridHeight, totalGridWidth;
+  let totalWidth: number, totalHeight: number, totalGridHeight: number, totalGridWidth: number;
   
   if (orientation === 'vertical') {
     totalWidth = gridSize * cellSize;
     totalGridHeight = word.length > 0 ? word.length * gridSize + (word.length - 1) * letterSpacing : 0;
     totalHeight = totalGridHeight * cellSize;
+    totalGridWidth = 0;
   } else {
     totalGridWidth = word.length > 0 ? word.length * gridSize + (word.length - 1) * letterSpacing : 0;
     totalWidth = totalGridWidth * cellSize;
     totalHeight = gridSize * cellSize;
+    totalGridHeight = 0;
   }
 
   return (
@@ -158,7 +160,7 @@ const App = () => {
           <label className="block text-gray-700 font-medium mb-2">
             Entrez votre texte :
           </label>
-          <div className="md:flex gap-3 mb-4 grid">
+          <div className="flex gap-3 mb-4">
             <input
               type="text"
               value={inputName}
@@ -211,7 +213,7 @@ const App = () => {
               </label>
               <input
                 type="range"
-                min="5"
+                min="10"
                 max="30"
                 value={cellSize}
                 onChange={(e) => setCellSize(Number(e.target.value))}
@@ -303,8 +305,8 @@ const App = () => {
                       const offsetY = letterIndex * (gridSize + letterSpacing) * cellSize;
                       return (
                         <g key={letterIndex}>
-                          {letters[letter] && letters[letter].map((row, rowIndex) =>
-                            row.map((cell, colIndex) =>
+                          {letters[letter] && letters[letter].map((row: number[], rowIndex: number) =>
+                            row.map((cell: number, colIndex: number) =>
                               cell === 1 ? (
                                 <rect
                                   key={`${letterIndex}-${rowIndex}-${colIndex}`}
@@ -337,8 +339,8 @@ const App = () => {
                       const offsetX = letterIndex * (gridSize + letterSpacing) * cellSize;
                       return (
                         <g key={letterIndex}>
-                          {letters[letter] && letters[letter].map((row, rowIndex) =>
-                            row.map((cell, colIndex) =>
+                          {letters[letter] && letters[letter].map((row: number[], rowIndex: number) =>
+                            row.map((cell: number, colIndex: number) =>
                               cell === 1 ? (
                                 <rect
                                   key={`${letterIndex}-${rowIndex}-${colIndex}`}
@@ -361,7 +363,11 @@ const App = () => {
               </svg>
             </div>
 
-  
+            <div className="mt-6 text-center text-gray-600">
+              <p className="text-sm">Chaque carreau représente un point de croix</p>
+              <p className="text-sm">Grille: {orientation === 'vertical' ? `${gridSize} x ${totalGridHeight}` : `${totalGridWidth} x ${gridSize}`} carreaux</p>
+              <p className="text-sm">Orientation: {orientation === 'vertical' ? 'Verticale' : 'Horizontale'} • Taille: {cellSize}px • Couleur: {color}</p>
+            </div>
           </div>
         )}
       </div>
@@ -369,4 +375,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default CrossStitchGenerator;
