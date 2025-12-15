@@ -171,7 +171,7 @@ const CrossStitchGenerator = () => {
               onKeyPress={(e) => e.key === 'Enter' && handleGenerate()}
               placeholder="Ex: Marie ou PAUL"
               className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 text-lg"
-              maxLength="20"
+              maxLength={20}
             />
             <button
               onClick={handleGenerate}
