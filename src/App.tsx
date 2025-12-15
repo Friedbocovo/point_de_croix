@@ -163,7 +163,7 @@ const CrossStitchGenerator = () => {
           <label className="block text-gray-700 font-medium mb-2">
             Entrez votre texte :
           </label>
-          <div className="flex gap-3 mb-4">
+          <div className="md:flex grid gap-3 mb-4">
             <input
               type="text"
               value={inputName}
@@ -366,11 +366,7 @@ const CrossStitchGenerator = () => {
               </svg>
             </div>
 
-            <div className="mt-6 text-center text-gray-600">
-              <p className="text-sm">Chaque carreau représente un point de croix</p>
-              <p className="text-sm">Grille: {orientation === 'vertical' ? `${gridSize} x ${totalGridHeight}` : `${totalGridWidth} x ${gridSize}`} carreaux</p>
-              <p className="text-sm">Orientation: {orientation === 'vertical' ? 'Verticale' : 'Horizontale'} • Taille: {cellSize}px • Couleur: {color}</p>
-            </div>
+
           </div>
         )}
       </div>
